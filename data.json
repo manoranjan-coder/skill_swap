@@ -1,0 +1,81 @@
+{
+  "skills": [
+    {
+      "id": 1,
+      "name": "Python for Beginners",
+      "owner": "Riya",
+      "role": "Teach",
+      "desc": "Basics, data types, functions and small projects.",
+      "tags": [
+        "Python",
+        "Beginner"
+      ],
+      "route": "/profile/1",
+      "status": "open"
+    },
+    {
+      "id": 2,
+      "name": "ReactJS Crash Course",
+      "owner": "Karan",
+      "role": "Teach",
+      "desc": "Component design, hooks, routing, states.",
+      "tags": [
+        "React",
+        "Frontend"
+      ],
+      "route": "/profile/2",
+      "status": "open"
+    },
+    {
+      "id": 3,
+      "name": "UI Design Fundamentals",
+      "owner": "Neha",
+      "role": "Learn",
+      "desc": "Looking to learn principles of UI & Figma.",
+      "tags": [
+        "UI",
+        "Design"
+      ],
+      "route": "/profile/3",
+      "status": "open"
+    },
+    {
+      "id": 4,
+      "name": "Data Science Project Help",
+      "owner": "Sahil",
+      "role": "Learn",
+      "desc": "Need guidance on Kaggle project and model selection.",
+      "tags": [
+        "Data Science"
+      ],
+      "route": "/profile/4",
+      "status": "open"
+    },
+    {
+      "id": 5,
+      "name": "JavaScript Deep Dive",
+      "owner": "Meera",
+      "role": "Teach",
+      "desc": "Closures, prototypes, async & event loop.",
+      "tags": [
+        "JS",
+        "Advanced"
+      ],
+      "route": "/profile/5",
+      "status": "open"
+    },
+    {
+      "id": 6,
+      "name": "Intro to SQL",
+      "owner": "Amit",
+      "role": "Teach",
+      "desc": "Basics of queries, joins and simple optimizations.",
+      "tags": [
+        "SQL",
+        "Database"
+      ],
+      "route": "/profile/6",
+      "status": "open"
+    }
+  ]
+}

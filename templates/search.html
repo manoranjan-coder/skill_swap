@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Skills - Skill Swap</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+    body, html { margin:0; padding:0; font-family: "Montserrat", sans-serif; background:#f7f7fb; color:#222; }
+    .container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+    .header { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:1.25rem; }
+    .title { font-size:1.5rem; font-weight:700; color:#2b2b3a; }
+    .sub { color:#6b6b7a; font-size:0.95rem; }
+    .controls { display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap; }
+    .search { display:flex; align-items:center; background:white; padding:8px; border-radius:10px; box-shadow:0 6px 18px rgba(32,24,64,0.06); }
+    .search input { border:0; outline:0; padding:6px 8px; font-size:0.95rem; width:240px; }
+    .select { background:white; border-radius:10px; padding:8px; box-shadow:0 6px 18px rgba(32,24,64,0.06); display:flex; gap:0.5rem; align-items:center; }
+    .chip { padding:6px 10px; border-radius:20px; background:#ece7fb; color:#5830a8; font-weight:600; cursor:pointer; font-size:0.85rem; border:1px solid transparent; }
+    .chip.active { background:#8a4fdd; color:white; box-shadow:0 6px 12px rgba(138,79,221,0.16); }
+    .notification-btn { background: transparent; border: none; cursor: pointer; color: #6b6b7a; padding: 6px; border-radius: 8px; transition: background-color 0.2s ease, color 0.2s ease; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+    .notification-btn:hover { background-color: #ece7fb; color: #8a4fdd; }
+    .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:1rem; margin-top:1.25rem; }
+    .card { background:white; border-radius:12px; padding:1rem; box-shadow:0 10px 30px rgba(35,30,62,0.06); display:flex; flex-direction:column; gap:0.6rem; transition:transform .18s ease, box-shadow .18s ease; }
+    .card:hover { transform: translateY(-6px); box-shadow:0 18px 40px rgba(35,30,62,0.10); }
+    .card-top { display:flex; align-items:center; gap:0.75rem; }
+    .avatar { width:48px; height:48px; border-radius:10px; background:linear-gradient(135deg,#8a4fdd,#6e3dbb); display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:0.95rem; }
+    .meta { display:flex; flex-direction:column; }
+    .skill-name { font-weight:700; color:#2b2b3a; font-size:1rem; }
+    .skill-role { font-size:0.85rem; color:#7b7b8b; }
+    .desc { font-size:0.9rem; color:#555; margin-top:4px; min-height:40px; }
+    .tags { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:auto; }
+    .tag { font-size:0.8rem; padding:6px 8px; border-radius:999px; background:#f1f0ff; color:#5a3db3; font-weight:600; }
+    .action-row { display:flex; justify-content:space-between; align-items:center; margin-top:0.8rem; gap:0.5rem; }
+    .btn { padding:8px 12px; border-radius:8px; border:0; cursor:pointer; font-weight:700; background:#8a4fdd; color:white; }
+    .btn.ghost { background:transparent; color:#6b6b7a; border:1px solid #eee; font-weight:600; }
+    .btn.pending { background:#ddd; color:#555; cursor:default; }
+    .empty { text-align:center; padding:3rem; color:#777; font-size:1rem; background:white; border-radius:10px; box-shadow:0 6px 20px rgba(32,24,64,0.04); }
+    .back-to-profile-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #007BFF;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease;
+      z-index: 9999;
+    }
+    .back-to-profile-btn:hover {
+      background-color: #0056b3;
+    }
+    @media (max-width:600px){ .search input { width:120px; } .title { font-size:1.25rem; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <div class="title">Find a Skill Partner</div>
+        <div class="sub">Search mentors and learners in your community</div>
+      </div>
+
+      <div class="controls">
+        <div class="search" role="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="opacity:.7"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <input id="searchInput" placeholder="Search skills, people..." />
+        </div>
+
+        <div class="select" aria-label="filters">
+          <div class="chip active" data-filter="all">All</div>
+          <div class="chip" data-filter="teach">Teach</div>
+          <div class="chip" data-filter="learn">Learn</div>
+        </div>
+      </div>
+
+      <!-- Notification button as a link -->
+<a href="{{ url_for('notifications') }}" class="notification-btn" aria-label="Notifications" title="Notifications">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+       stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+  </svg>
+</a>
+
+    </div>
+
+    <div id="grid" class="grid" aria-live="polite"></div>
+
+    <div id="empty" class="empty" style="display:none; margin-top:1rem;">
+      No matching skills. Try different keywords or clear filters.
+    </div>
+  </div>
+
+  <!-- Back to Profile Button -->
+  <a href="{{ url_for('profile') }}" class="back-to-profile-btn" title="Back to Profile">
+    Back to Profile
+  </a>
+
+  <script>
+    // sample data
+    const skills = [
+      { id:1, name:"Python for Beginners", owner:"Riya", role:"Teach", desc:"Basics, data types, functions and small projects.", tags:["Python","Beginner"], route:"profile.html" },
+      { id:2, name:"ReactJS Crash Course", owner:"Karan", role:"Teach", desc:"Component design, hooks, routing, states.", tags:["React","Frontend"], route:"profile.html" },
+      { id:3, name:"UI Design Fundamentals", owner:"Neha", role:"Learn", desc:"Looking to learn principles of UI & Figma.", tags:["UI","Design"], route:"profile.html" },
+      { id:4, name:"Data Science Project Help", owner:"Sahil", role:"Learn", desc:"Need guidance on Kaggle project and model selection.", tags:["Data Science"], route:"profile.html" },
+      { id:5, name:"JavaScript Deep Dive", owner:"Meera", role:"Teach", desc:"Closures, prototypes, async & event loop.", tags:["JS","Advanced"], route:"profile.html" },
+      { id:6, name:"Intro to SQL", owner:"Amit", role:"Teach", desc:"Basics of queries, joins and simple optimizations.", tags:["SQL","Database"], route:"profile.html" }
+    ];
+
+    const grid = document.getElementById('grid');
+    const empty = document.getElementById('empty');
+    const searchInput = document.getElementById('searchInput');
+    const chips = document.querySelectorAll('.chip');
+    const notificationBtn = document.querySelector('.notification-btn');
+
+    let activeFilter = 'all';
+
+    function renderList(list){
+      grid.innerHTML = '';
+      if(!list.length){
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      list.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-top">
+            <div class="avatar">${item.owner[0].toUpperCase()}</div>
+            <div class="meta">
+              <div class="skill-name">${item.name}</div>
+              <div class="skill-role">${item.owner} • ${item.role}</div>
+            </div>
+          </div>
+          <div class="desc">${item.desc}</div>
+          <div class="tags">${item.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+          <div class="action-row">
+            <button class="btn connect-btn" data-id="${item.id}">Connect</button>
+            <button class="btn ghost" onclick="window.location.href='${item.route}'">View</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      // connect button behavior
+      document.querySelectorAll('.connect-btn').forEach(b=>{
+        b.addEventListener('click', ()=>{
+          b.textContent = "Pending";
+          b.classList.add("pending");
+          b.disabled = true;
+        });
+      });
+    }
+
+    // initial render
+    renderList(skills);
+
+    // search handler
+    searchInput.addEventListener('input', ()=>{
+      const q = searchInput.value.trim().toLowerCase();
+      filterAndRender(q, activeFilter);
+    });
+
+    // chip filters
+    chips.forEach(ch=>{
+      ch.addEventListener('click', ()=>{
+        chips.forEach(c=>c.classList.remove('active'));
+        ch.classList.add('active');
+        activeFilter = ch.dataset.filter;
+        filterAndRender(searchInput.value.trim().toLowerCase(), activeFilter);
+      });
+    });
+
+    function filterAndRender(query, filter){
+      let result = skills.filter(s=>{
+        const matchesFilter = (filter === 'all') || (s.role.toLowerCase() === filter);
+        const matchesQuery = !query || s.name.toLowerCase().includes(query) || s.owner.toLowerCase().includes(query) || s.tags.join(' ').toLowerCase().includes(query);
+        return matchesFilter && matchesQuery;
+      });
+      renderList(result);
+    }
+
+  </script>
+</body>
+</html>

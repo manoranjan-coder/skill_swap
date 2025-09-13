@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <title>Sign Up - Skill Swap</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      font-family: "Montserrat", sans-serif;
+      background: #12023d;
+      overflow: hidden;
+    }
+    .signup-container {
+      position: relative; min-height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+    }
+    .shape {
+      position: absolute;
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+    }
+    .shape.left-top {
+      top: 0; left: 0; width: 600px;
+      clip-path: polygon(0 0, 100% 0, 60% 100%, 0% 100%);
+      background: linear-gradient(180deg, #f7c7e7 0%, #f9d9d9 100%);
+    }
+    .shape.left-bottom {
+      bottom: 0; left: 0; width: 600px;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 40% 100%);
+      background: linear-gradient(180deg, #d6b0f0 0%, #e9c9f9 100%);
+    }
+    .shape.right-top {
+      top: 0; right: 0; width: 600px;
+      clip-path: polygon(40% 0, 100% 0, 100% 100%, 0 100%);
+      background: linear-gradient(135deg, #7f8dbd 0%, #a59ed3 100%);
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.15);
+    }
+    .shape.right-bottom {
+      bottom: 0; right: 0; width: 600px;
+      clip-path: polygon(60% 0, 100% 0, 100% 100%, 0 100%);
+      background: linear-gradient(180deg, #bba3cc 0%, #d3c0db 100%);
+    }
+    .signup-form {
+      position: relative; z-index: 10;
+      background: transparent;
+      max-width: 350px; width: 100%;
+      padding: 3rem 2rem 2rem;
+      display: flex; flex-direction: column;
+      align-items: center;
+      color: #7a85b8; text-align: center;
+    }
+    .signup-form h2 {
+      font-weight: 700;
+      font-size: 2.8rem;
+      margin-bottom: 0.25rem;
+      background: linear-gradient(90deg, #d9b6e8 0%, #8a4f9e 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      user-select: none;
+    }
+    .signup-form label {
+      align-self: flex-start;
+      margin: 0.75rem 0 0.25rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #7a85b8;
+    }
+    .signup-form input {
+      width: 100%;
+      border-radius: 9999px;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      font-size: 0.9rem;
+      color: #999;
+      box-shadow: 0 0 20px 5px rgba(218, 209, 237, 0.3);
+      text-align: center;
+      transition: box-shadow 0.3s ease, color 0.3s ease;
+    }
+    .signup-form input::placeholder {
+      color: #ccc;
+      text-align: center;
+    }
+    .signup-form input:focus {
+      outline: none;
+      box-shadow: 0 0 20px 5px #d9b6e8;
+      color: #555;
+      text-align: left;
+    }
+    .signup-form button {
+      margin-top: 2rem;
+      background-color: #8a4fdd;
+      color: rgb(243, 244, 247);
+      border: none;
+      padding: 0.5rem 2rem;
+      border-radius: 0.25rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    .signup-form button:hover {
+      background-color: #6e3dbb;
+    }
+    @media (max-width: 640px) {
+      .shape { width: 300px; }
+      .signup-form {
+        max-width: 90vw;
+        padding: 2rem 1rem 1rem;
+      }
+      .signup-form h2 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-container" role="main">
+    <div aria-hidden="true" class="shape left-top"></div>
+    <div aria-hidden="true" class="shape left-bottom"></div>
+    <div aria-hidden="true" class="shape right-top"></div>
+    <div aria-hidden="true" class="shape right-bottom"></div>
+
+    <form class="signup-form" aria-label="Sign up form" method="POST" action="/signup">
+
+      <h2>Create Account</h2>
+      <label for="fullname">Full Name</label>
+      <input id="fullname" name="fullname" type="text" placeholder="Enter your full name" required />
+      
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" placeholder="Enter your email" required />
+      
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" placeholder="Create a password" required />
+
+      <label for="confirm">Confirm Password</label>
+      <input id="confirm" name="confirm" type="password" placeholder="Confirm your password" required />
+
+      <button class="submit-btn" type="submit">Submit</button>
+      <p>Already have an account? <a href="login.html">Login</a></p>
+    </form>
+  </div>
+</body>
+</html>

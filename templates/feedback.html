@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Feedback Widget</title>
+  <style>
+    :root{
+      --accent:#8a4fdd;
+      --accent-dark:#6e3dbb;
+      --muted:#7b7b8b;
+      --bg:#f7f7fb;
+      --card:#fff;
+    }
+    *{box-sizing:border-box}
+    body{
+      font-family: "Segoe UI", Roboto, system-ui, Arial, sans-serif;
+      background:var(--bg);
+      margin:2rem;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+    }
+
+    .back-to-profile {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      z-index: 1000;
+    }
+
+    .back-to-profile a {
+      color: var(--accent-dark);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .back-to-profile a:hover,
+    .back-to-profile a:focus {
+      color: var(--accent);
+      outline: none;
+      text-decoration: underline;
+    }
+
+    .card{
+      width:100%;
+      max-width:520px;
+      background:var(--card);
+      padding:1.25rem;
+      border-radius:12px;
+      box-shadow:0 10px 30px rgba(35,30,62,0.06);
+    }
+
+    h2{ margin:0 0 0.5rem 0; font-size:1.25rem; color:#24232b; }
+    p.lead{ margin:0 0 1rem 0; color:var(--muted); font-size:0.95rem }
+
+    /* Stars */
+    .stars{
+      display:flex;
+      gap:6px;
+      align-items:center;
+      margin:0.5rem 0 1rem 0;
+    }
+    .star-btn{
+      --size:40px;
+      width:var(--size);
+      height:var(--size);
+      display:inline-grid;
+      place-items:center;
+      border-radius:8px;
+      background:transparent;
+      border:1px solid transparent;
+      cursor:pointer;
+      transition:transform .12s ease, background .12s ease;
+      font-size:20px;
+      color:#cfcbe8;
+      user-select:none;
+    }
+    .star-btn:hover{ transform:translateY(-4px); }
+    .star-btn.active{
+      color: #fff;
+      background: linear-gradient(180deg,var(--accent),var(--accent-dark));
+      box-shadow: 0 8px 18px rgba(138,79,221,0.18);
+    }
+    .star-label{ font-size:0.9rem; color:var(--muted); margin-left:8px; }
+
+    textarea{
+      width:100%;
+      min-height:110px;
+      resize:vertical;
+      border-radius:10px;
+      padding:10px 12px;
+      font-size:0.95rem;
+      border:1px solid #e8e6f2;
+      background:#fbfbfe;
+      color:#222;
+      outline: none;
+    }
+    textarea:focus{ box-shadow:0 6px 18px rgba(138,79,221,0.08); border-color:var(--accent); }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin-top:12px;
+    }
+
+    .btn{
+      padding:10px 14px;
+      border-radius:10px;
+      border:0;
+      font-weight:700;
+      cursor:pointer;
+      background:var(--accent);
+      color:#fff;
+      min-width:120px;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      justify-content:center;
+      transition:transform .12s ease, opacity .12s ease;
+    }
+    .btn:active{ transform:translateY(1px); }
+    .btn.secondary{
+      background:transparent;
+      color:var(--muted);
+      border:1px solid #eee;
+      font-weight:600;
+      min-width:90px;
+    }
+    .btn[disabled]{ opacity:.6; cursor:default; transform:none; }
+
+    /* Success animation: morph button to check */
+    .btn-success {
+      position:relative;
+      overflow:hidden;
+    }
+    .check {
+      width:18px; height:18px;
+      border-radius:50%;
+      display:inline-block;
+      transform:scale(0);
+      opacity:0;
+      transition:transform .25s cubic-bezier(.2,.9,.2,1), opacity .15s;
+      background:transparent;
+    }
+    .check svg { width:18px; height:18px; display:block; }
+    .btn.success .check { transform:scale(1); opacity:1; }
+
+    .thankyou{
+      margin-top:14px;
+      padding:10px 12px;
+      border-radius:10px;
+      background:#eaf8ff;
+      border:1px solid #bfe8ff;
+      color:#05506a;
+      display:none;
+      align-items:center;
+      gap:10px;
+    }
+    .thankyou.show{ display:flex; }
+
+    .saved-rev{ margin-top:10px; color:#555; font-size:0.9rem; }
+
+    /* small responsive */
+    @media (max-width:480px){
+      .star-btn{ --size:36px; font-size:18px }
+    }
+  </style>
+</head>
+<body>
+  <div class="back-to-profile">
+  <a href="{{ url_for('profile') }}">Back to Profile</a>
+
+</div>
+
+
+
+  <main class="card" aria-live="polite">
+    <h2>Give Feedback</h2>
+    <p class="lead">Help us improve — quick rating and optional comment.</p>
+
+    <form id="feedbackForm" autocomplete="off">
+      <label for="rating" style="display:block;font-weight:700;margin-bottom:6px">Your rating</label>
+
+      <div class="stars" role="radiogroup" aria-labelledby="rating">
+        <!-- buttons created by JS fallback if not -->
+      </div>
+
+      <label for="comment" style="display:block;font-weight:700;margin:8px 0 6px 0">Tell us more (optional)</label>
+      <textarea id="comment" placeholder="What did you like? What can we improve?" maxlength="800"></textarea>
+
+      <div class="actions">
+        <button type="submit" class="btn btn-success" id="submitBtn" aria-live="polite">
+          <span class="btn-text">Submit</span>
+          <span class="check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 6L9 17l-5-5"></path>
+            </svg>
+          </span>
+        </button>
+
+        <button type="button" class="btn secondary" id="clearBtn">Clear</button>
+
+        <div style="margin-left:auto; font-size:0.88rem; color:var(--muted)" id="currentRatingText">No rating yet</div>
+      </div>
+
+      <div class="thankyou" id="thankyou" role="status" aria-live="polite">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#05506a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6L9 17l-5-5"></path>
+        </svg>
+        <div>
+          <strong>Thank you!</strong>
+          <div style="font-size:0.92rem; color:#084b57">Your feedback has been received.</div>
+        </div>
+      </div>
+
+      <div class="saved-rev" id="savedRevs" aria-live="polite"></div>
+    </form>
+  </main>
+
+  <script>
+    // Basic interactive star rating + submit behavior + localStorage persistence
+
+    const MAX = 5;
+    const starsContainer = document.querySelector('.stars');
+    const currentRatingText = document.getElementById('currentRatingText');
+    const commentEl = document.getElementById('comment');
+    const submitBtn = document.getElementById('submitBtn');
+    const thankyou = document.getElementById('thankyou');
+    const savedRevs = document.getElementById('savedRevs');
+
+    let rating = 0;
+
+    // helper to create star buttons
+    function createStars() {
+      for (let i=1; i<=MAX; i++){
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'star-btn';
+        btn.dataset.value = i;
+        btn.setAttribute('aria-label', i + ' star');
+        btn.setAttribute('role','radio');
+        btn.setAttribute('aria-checked','false');
+        btn.innerHTML = '★';
+        // mouse
+        btn.addEventListener('click', ()=> setRating(i));
+        btn.addEventListener('mouseenter', ()=> preview(i));
+        btn.addEventListener('mouseleave', ()=> preview(rating));
+        // keyboard
+        btn.addEventListener('keydown', (e)=>{
+          if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); setRating(i); }
+          if(e.key === 'ArrowLeft'){ e.preventDefault(); focusStar(Math.max(1, i-1)); }
+          if(e.key === 'ArrowRight'){ e.preventDefault(); focusStar(Math.min(MAX, i+1)); }
+        });
+        starsContainer.appendChild(btn);
+      }
+      // set first tab stop
+      starsContainer.querySelector('.star-btn').tabIndex = 0;
+    }
+
+    function focusStar(i){
+      const btn = starsContainer.querySelector(`.star-btn[data-value="${i}"]`);
+      if(btn) btn.focus();
+    }
+
+    function preview(v){
+      document.querySelectorAll('.star-btn').forEach(b=>{
+        const val = parseInt(b.dataset.value,10);
+        b.classList.toggle('active', val <= v);
+      });
+      currentRatingText.textContent = v ? `${v} / ${MAX} stars` : 'No rating yet';
+    }
+
+    function setRating(v){
+      rating = v;
+      // update aria-checked
+      document.querySelectorAll('.star-btn').forEach(b=>{
+        const val = parseInt(b.dataset.value,10);
+        b.setAttribute('aria-checked', val === v ? 'true' : 'false');
+      });
+      preview(v);
+    }
+
+    createStars();
+    preview(0);
+
+    // load saved reviews (simple)
+    function loadSaved(){
+      const stored = JSON.parse(localStorage.getItem('reviews_v1') || '[]');
+      if(!stored.length){
+        savedRevs.textContent = 'No previous feedback saved.';
+        return;
+      }
+      savedRevs.innerHTML = stored.slice().reverse().map(r=>{
+        const c = r.comment ? ` — "${escapeHtml(r.comment.substring(0,80))}${r.comment.length>80?'...':''}"` : '';
+        return `<div style="margin-top:8px">⭐ ${r.rating} ${c} <span style="color:#999;font-size:.85rem">(${new Date(r.at).toLocaleString()})</span></div>`;
+      }).join('');
+    }
+
+    function escapeHtml(s){
+      return s.replace(/[&<>"']/g, (m)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+    }
+
+    loadSaved();
+
+    // submit handler
+    document.getElementById('feedbackForm').addEventListener('submit', e=>{
+      e.preventDefault();
+      if(!rating){
+        alert('Please choose a rating before submitting.');
+        return;
+      }
+      // simulate saving
+      const comment = commentEl.value.trim();
+      const entry = { rating, comment, at: Date.now() };
+      const arr = JSON.parse(localStorage.getItem('reviews_v1') || '[]');
+      arr.push(entry);
+      localStorage.setItem('reviews_v1', JSON.stringify(arr));
+
+      // animate button -> success
+      submitBtn.disabled = true;
+      submitBtn.classList.add('success');
+      submitBtn.querySelector('.btn-text').textContent = 'Saved';
+      // show thank you
+      thankyou.classList.add('show');
+
+      // refresh saved list
+      loadSaved();
+
+      // after short delay, reset form UI but keep rating saved in storage
+      setTimeout(()=>{
+        submitBtn.querySelector('.btn-text').textContent = 'Submit';
+        submitBtn.classList.remove('success');
+        submitBtn.disabled = false;
+        commentEl.value = '';
+        // optionally reset rating:
+        // setRating(0);
+      }, 1600);
+    });
+
+    // clear button
+    document.getElementById('clearBtn').addEventListener('click', ()=>{
+      if(confirm('Clear all saved feedback on this browser?')) {
+        localStorage.removeItem('reviews_v1');
+        loadSaved();
+      }
+    });
+
+    // hide thankyou after a while when shown
+    const observer = new MutationObserver((mut)=>{
+      if(thankyou.classList.contains('show')){
+        setTimeout(()=> thankyou.classList.remove('show'), 2800);
+      }
+    });
+    observer.observe(thankyou, { attributes: true });
+
+  </script>
+</body>
+</html>

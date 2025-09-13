@@ -1,0 +1,81 @@
+[
+    {
+        "fullname": "MANO RANJAN G",
+        "email": "agenttechno006@gmail.com",
+        "password": "mano"
+    },
+    {
+        "fullname": "APARNA S",
+        "email": "mano@gmail.com",
+        "password": "Mano@2006"
+    },
+    {
+        "fullname": "MANO RANJAN G",
+        "email": "24ad061@kpriet.ac.in",
+        "password": "123"
+    },
+    {
+        "fullname": "jaiwant",
+        "email": "24ad048@kpriet.ac.in",
+        "password": "591600"
+    },
+    {
+        "fullname": "jaiwant karuun",
+        "email": "24ad048@gmail.com",
+        "password": "1234"
+    },
+    {
+        "fullname": "kiruthika",
+        "email": "kiruthika@gmail.com",
+        "password": "591600",
+        "skills": [
+            "python",
+            "java",
+            "c program",
+            "javascript"
+        ],
+        "bio": "i am kiruthika"
+    },
+    {
+        "fullname": "balaji",
+        "email": "balaji@gmail.com",
+        "password": "123"
+    },
+    {
+        "fullname": "balaji",
+        "email": "balaji1@gmail.com",
+        "password": "123"
+    },
+    {
+        "fullname": "balaji",
+        "email": "balaji2@gmail.com",
+        "password": "123",
+        "bio": "",
+        "skills": ""
+    },
+    {
+        "fullname": "Mano",
+        "email": "ranjan@gmail.com",
+        "password": "123456",
+        "skills": [],
+        "bio": ""
+    },
+    {
+        "fullname": "Riya",
+        "email": "riya@gmail.com",
+        "password": "riya123",
+        "skills": [
+            "python",
+            "AI",
+            "Machine Learning"
+        ],
+        "bio": "Python developer and  AI enthusiast"
+    },
+    {
+        "fullname": "Karan",
+        "email": "karan@gmail.com",
+        "password": "karan",
+        "skills": [],
+        "bio": ""
+    }
+]

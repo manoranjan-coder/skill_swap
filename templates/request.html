@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connection Requests | Skill Partner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4a6cf7;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover {
+            color: #4a6cf7;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .requests-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .request-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.2s;
+        }
+        
+        .request-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+        
+        .profile-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #e0e0e0;
+        }
+        
+        .request-info {
+            flex: 1;
+        }
+        
+        .profile-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .profile-skills {
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .request-message {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        
+        .request-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-accept {
+            background-color: #4a6cf7;
+            color: white;
+        }
+        
+        .btn-accept:hover {
+            background-color: #3b5be3;
+        }
+        
+        .btn-decline {
+            background-color: #f8f9fa;
+            color: #666;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .btn-decline:hover {
+            background-color: #f1f3f5;
+        }
+        
+        .no-requests {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .no-requests p {
+            color: #888;
+            margin-bottom: 20px;
+        }
+        
+        .empty-icon {
+            font-size: 48px;
+            color: #ccc;
+            margin-bottom: 15px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #777;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        @media (max-width: 600px) {
+            .request-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .request-actions {
+                justify-content: center;
+            }
+            
+            nav ul {
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">SkillPartner</div>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">My Network</a></li>
+                    <li><a href="#">Messages</a></li>
+                    <li><a href="#">Profile</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <h1 class="page-title">Connection Requests</h1>
+        
+        <div class="requests-container" id="requestsContainer">
+            <!-- Connection requests will be displayed here -->
+        </div>
+        
+        <footer>
+            <p>© 2023 SkillPartner. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+  const requestsContainer = document.getElementById('requestsContainer');
+  const REQUESTS_KEY = 'connectionRequests';
+
+  function getRequests() {
+    return JSON.parse(localStorage.getItem(REQUESTS_KEY) || '[]');
+  }
+
+  function saveRequests(requests) {
+    localStorage.setItem(REQUESTS_KEY, JSON.stringify(requests));
+  }
+
+  function displayRequests() {
+    const connectionRequests = getRequests();
+
+    if (connectionRequests.length === 0) {
+      requestsContainer.innerHTML = `
+        <div class="no-requests">
+          <div class="empty-icon">📭</div>
+          <p>You don't have any connection requests at the moment.</p>
+        </div>
+      `;
+      return;
+    }
+
+    requestsContainer.innerHTML = '';
+
+    connectionRequests.forEach(request => {
+      const requestElement = document.createElement('div');
+      requestElement.className = 'request-card';
+      requestElement.innerHTML = `
+        <img src="${request.profileImg || 'https://via.placeholder.com/70?text=' + request.name.charAt(0)}" alt="Profile picture of ${request.name}" class="profile-img">
+        <div class="request-info">
+          <h3 class="profile-name">${request.name}</h3>
+          <p class="profile-skills">${request.skillName}</p>
+          <div class="request-message">${request.message}</div>
+          <div class="request-actions">
+            <button class="btn btn-accept" data-id="${request.id}">Accept</button>
+            <button class="btn btn-decline" data-id="${request.id}">Decline</button>
+          </div>
+        </div>
+      `;
+      requestsContainer.appendChild(requestElement);
+    });
+
+    document.querySelectorAll('.btn-accept').forEach(button => {
+      button.addEventListener('click', function () {
+        const id = parseInt(this.getAttribute('data-id'));
+        acceptRequest(id);
+      });
+    });
+
+    document.querySelectorAll('.btn-decline').forEach(button => {
+      button.addEventListener('click', function () {
+        const id = parseInt(this.getAttribute('data-id'));
+        declineRequest(id);
+      });
+    });
+  }
+
+  function acceptRequest(id) {
+    let requests = getRequests();
+    const index = requests.findIndex(r => r.id === id);
+    if (index !== -1) {
+      const acceptedRequest = requests[index];
+      alert(`Connection accepted with ${acceptedRequest.name}!`);
+      requests.splice(index, 1);
+      saveRequests(requests);
+      displayRequests();
+    }
+  }
+
+  function declineRequest(id) {
+    let requests = getRequests();
+    const index = requests.findIndex(r => r.id === id);
+    if (index !== -1) {
+      const declinedRequest = requests[index];
+      alert(`Connection request from ${declinedRequest.name} declined.`);
+      requests.splice(index, 1);
+      saveRequests(requests);
+      displayRequests();
+    }
+  }
+
+  displayRequests();
+});
+
+    </script>
+</body>
+</html>

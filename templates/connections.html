@@ -1,0 +1,17 @@
+<h2>My Connections</h2>
+<ul>
+  {% for conn in connections %}
+    <li>
+      {{ conn['fullname'] }} ({{ conn['email'] }}) - {{ conn['status'] }}
+      {% if conn['status'] == 'pending' %}
+        <a href="/respond/{{ conn['id'] }}/accepted">Accept</a> |
+        <a href="/respond/{{ conn['id'] }}/rejected">Reject</a>
+      {% elif conn['status'] == 'accepted' %}
+        <a href="/chat/{{ conn['uid'] }}">Chat</a>
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>
+{% if not connections %}
+  <p>You have no connections yet.</p>
+{% endif %}
